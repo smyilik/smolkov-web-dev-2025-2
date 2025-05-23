@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="post-header">
+    <h1 class="post-title">{{ post.title }}</h1>
+    <div class="post-meta">
+        <span class="author-avatar"><img src="{{ url_for('static', filename='images/avatar.jpg') }}" alt="avatar"></span>
+        <!-- <span class="comment-avatar"><img src="{ url_for('static', filename='images/avatar_' + post.image_id + '.jpg') }" alt="avatar"></span> -->
+        <span class="author">{{ post.author }}</span>
+        <span class="date"> {{ post.date.strftime('%d.%m.%Y') }}</span>
+    </div>
+</div>
+
+<div class="post-content">    
+    <figure class="image-container">
+        <img src="{{ url_for('static', filename='images/' + post.image_id) }}" alt="Card image cap">
+    </figure>
+    <p>
+        {{ post.text }}
+    </p>
+</div>
+
+<section class="comments-section">
+    <div class="comment-form-outer">
+        <div class="comment-form-title">
+            <h2>Оставьте комментарий</h2>
+        </div>
+        <div class="comment-form">
+            <form action="#" method="post">
+                <textarea name="comment" placeholder="Ваш комментарий..."></textarea>
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="comments-list">
+        {% for comment in post.comments %}
+        <div class="comment">
+            <div class="comment-meta">
+                <span class="comment-avatar"><img src="{{ url_for('static', filename='images/avatar.jpg') }}" alt="avatar"></span>
+                <!-- <span class="comment-avatar"><img src="{ url_for('static', filename='images/avatar_' + post.image_id + '_' + post.comment.comment_id + '.jpg') }" alt="avatar"></span> -->
+                <span class="comment-author">{{ comment.author }}</span>
+            </div>
+            <div class="comment-date">{{ comment.date.strftime('%d.%m.%Y') }}, {{ comment.time }}</div>
+            <div class="comment-text">{{ comment.text }}</div>
+
+            {% for reply in comment.replies %}
+            <div class="reply">
+                <div class="comment-meta">
+                    <span class="comment-avatar"><img src="{{ url_for('static', filename='images/avatar.jpg') }}" alt="avatar"></span>
+                    <!-- <span class="comment-avatar"><img src="{ url_for('static', filename='images/avatar_' + post.image_id + '_' + post.comment.comment_id + '.jpg') }" alt="avatar"></span> -->
+                    <span class="comment-author">{{ reply.author }}</span>
+                </div>
+                <div class="comment-date">{{ reply.date.strftime('%d.%m.%Y') }}, {{ reply.time }}</div>
+                <div class="comment-text">{{ reply.text }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

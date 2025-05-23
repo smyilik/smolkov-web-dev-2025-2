@@ -1,0 +1,13 @@
+file = open("products.csv", encoding="utf8")
+file.readline()
+text = file.readlines()
+file.close()
+adults = float(0)
+elderly = float(0)
+children = float(0)
+for line in text:
+    line = line.split(',')
+    adults += float(line[1])
+    elderly += float(line[2])
+    children += float(line[3])
+print(round(adults, 2), round(elderly, 2), round(children, 2))
