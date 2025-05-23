@@ -1,2 +1,7 @@
 ve
 .pytest_cache
+__pycache__
+lab 1/app/.pytest_cache
+lab 1/app/__pycache__
+lab 1/app/tests/.pytest_cache
+lab 1/app/tests/__pycache__
