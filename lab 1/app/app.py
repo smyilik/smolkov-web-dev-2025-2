@@ -14,14 +14,6 @@ images_ids = ['7d4e9175-95ea-4c5f-8be5-92a6b708bb3c',
 app = Flask(__name__)
 application = app
 
-# def create_app():
-#     app = Flask(__name__)
-#     # app.config['SECRET_KEY'] = 'kjfhksdjfh kjhdfkjsh' # <-- add ' here
-#     return app
-
-# if __name__ == '__main__':
-#     app = create_app().run(host='0.0.0.0', port=5000, debug=True)
-
 def generate_comments(replies=True):
     comments = []
     for _ in range(random.randint(1, 3)):
@@ -75,3 +67,6 @@ def post(index):
 @app.route('/about')
 def about():
     return render_template('about.html', title='Об авторе')
+
+if __name__ == "__main__":
+    app.run(debug=True)
