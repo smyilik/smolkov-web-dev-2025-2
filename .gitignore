@@ -5,3 +5,6 @@ lab 1/app/.pytest_cache
 lab 1/app/__pycache__
 lab 1/app/tests/.pytest_cache
 lab 1/app/tests/__pycache__
+lab 2/app/.pytest_cache
+lab 2/app/__pycache__
+lab 2/app/tests/__pycache__

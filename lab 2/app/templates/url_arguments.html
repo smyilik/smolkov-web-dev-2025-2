@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mt-5 text-center">Параметры URL</h1>
+<div>
+    <ul class="my-3">
+        {% for i, j in request.args.items() %}
+        <li>{{ i }} = {{ j }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
