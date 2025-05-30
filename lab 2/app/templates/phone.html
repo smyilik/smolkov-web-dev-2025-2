@@ -13,7 +13,7 @@
                 id="phone"
                 name="phone"
                 placeholder="+7 495 *** ** **"
-                value="{{ request.form.phone if request.form.phone else 'Ошибка ввода' }}"
+                value="{{ request.form.phone if request.form.phone else '' }}"
                 required>
             </input>
             <button type="submit">Отправить</button>
