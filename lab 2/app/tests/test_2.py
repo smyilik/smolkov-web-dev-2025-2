@@ -1,6 +1,7 @@
 import pytest
 from app import app, check_phone_number, convert_phone_number
 
+<<<<<<< HEAD
 # def test_cookies(client):
 #     response = client.get("/cookies")
 #     assert response.status_code == 200
@@ -11,6 +12,8 @@ from app import app, check_phone_number, convert_phone_number
 #     assert "Set-Cookie" in response.headers
 #     assert "Cats=;" in response.headers["Set-Cookie"]
 
+=======
+>>>>>>> 2d732f36a24e017833c436988f26a7510ccb5374
 @pytest.fixture
 def client():
     app.config['TESTING'] = True
