@@ -8,3 +8,7 @@ lab 1/app/tests/__pycache__
 lab 2/app/.pytest_cache
 lab 2/app/__pycache__
 lab 2/app/tests/__pycache__
+lab 3/app/.pytest_cache
+lab 3/app/__pycache__
+lab 3/app/tests/.pytest_cache
+lab 3/app/tests/__pycache__

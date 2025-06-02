@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-outer">
+    <div class="form-title">
+        <h2>Оставьте ваш комментарий</h2>
+    </div>
+    <div class="form">
+        <form method="post">
+            <label for="topic">topic</label>
+            <input
+                type="text"
+                id="topic"
+                name="topic"
+                placeholder="Тема вашего коментария..."
+                value="{{ request.form.get('topic') if request.form.get('topic') else '' }}"
+                required>
+            </input>
+            <label for="text"></label>
+            <textarea
+                id="text"
+                name="text"
+                placeholder="Ваш комментарий..."
+                required>{{ request.form.get('topic') or '' }}</textarea>
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+    {% if request.form%}
+    <ul class="my-3">
+        {% for i, j in request.form.items() %}
+        <li>{{ i }} = {{ j }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,9 +1,18 @@
 import random
 from functools import lru_cache
 from flask import request
-from flask import Flask, make_response, render_template, session
+from flask import Flask, make_response, render_template, session, flash, g, redirect, url_for
 from faker import Faker
+from flask_login import LoginManager, login_user, login_required
+from UserLogin import UserLogin
+from FDataBase import FDataBase
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+import sqlite3
 
+DATABASE = 'web_db.db'
+SECRET_KEY = 'f905fa91afe84294ea89da342c0b46b20fd133c5'
+DEBUG = True
 fake = Faker()
 
 images_ids = ['7d4e9175-95ea-4c5f-8be5-92a6b708bb3c',
@@ -13,7 +22,55 @@ images_ids = ['7d4e9175-95ea-4c5f-8be5-92a6b708bb3c',
               'cab5b7f2-774e-4884-a200-0c0180fa777f']
 
 app = Flask(__name__)
+app.config.from_object(__name__)
+app.config.update(dict(DATABASE=os.path.join(app.root_path, 'web_db.db')))
+app.config['SECRET_KEY'] = SECRET_KEY
 application = app
+
+login_manager = LoginManager(app)
+
+def connect_db():
+    connection = sqlite3.connect(app.config['DATABASE'])
+    # data will be represented as dictionary instead of tuple
+    connection.row_factory = sqlite3.Row
+    return connection
+
+def create_db():
+    db = connect_db()
+    with app.open_resource('sq_db.sql', mode='r') as file:
+        # Cursor class provides methods for moving the cursor
+        # through the query result, and methods to get the data
+        # from the columns of each row in the result
+        db.cursor().executescript(file.read())
+    # Save changes to database and close it
+    db.commit()
+    db.close()
+
+def get_db():
+    # check if g has attribute 'link_db'
+    if not hasattr(g, 'link_db'):
+        g.link_db = connect_db()
+    return g.link_db
+
+dbase = None
+g_user = None
+
+@app.before_request
+def before_request_function():
+    global dbase
+    db = get_db()
+    dbase = FDataBase(db)
+
+@app.teardown_appcontext
+def close_db(error):
+    # check if g has attribute 'link_db'
+    if hasattr(g, 'link_db'):
+        g.link_db.close()
+
+@login_manager.user_loader
+def load_user(user_id):
+    # print('load_user')
+    return UserLogin().fromDB(user_id, dbase)
 
 def generate_comments(replies=True):
     comments = []
@@ -73,7 +130,6 @@ def check_phone_number(phone_number):
     elif len(numbers) == 11 and (numbers[0] != '8' and (numbers[0] != '7' or not(is_plus_first))):
         return "Недопустимый формат. Неверное начало номера."
     return None
-
 
 def convert_phone_number(phone_number):
     # 8-***-***-**-**
@@ -142,5 +198,48 @@ def phone():
         converted_phone=convert_phone_number(phone)
     return render_template('phone.html', title='Оставить номер', error=error,converted_phone=converted_phone)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+@app.route('/session_counter')
+def session_counter():
+    if 'visits' in session:
+        session['visits'] = session.get('visits') + 1
+    else:
+        session['visits'] = 1
+    return render_template('session_counter.html', title='Счётчик посещений')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == "POST":
+        user = dbase.getUserByUsername(request.form['username'])
+        if user and check_password_hash(user['password'], request.form['password']):
+            global g_user
+            g_user = UserLogin().create(user)
+            login_user(g_user)
+            return render_template('index.html')
+        # makes it possible to record a message at the end of a request and access it next request and only next request
+        # used to give feedback to a user
+        error = "Wrong password or login"
+    return render_template('login.html', title='Log in', error=error)
+
+@app.route('/reg', methods=['GET', 'POST'])
+def reg():
+    error = None
+    if request.method == "POST":
+        # if len(request.form['username']) > 4 and len(request.form['email']) > 4 \
+        #     and len(request.form['password'] > 4):
+        hash = generate_password_hash(request.form['password'])
+        res = dbase.addUser(request.form['username'], request.form['email'], hash)
+        if res:
+            user = dbase.getUserByUsername(request.form['username'])
+            global g_user
+            g_user = UserLogin().create(user)
+            login_user(g_user)
+            return render_template('index.html')
+        else:
+            error = "User with this email already exists"
+    return render_template("reg.html", title="Регистрация", error=error)
+
+
+
+# if __name__ == "__main__":
+#     app.run(debug=DEBUG)

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-outer">
+    <div class="form">
+        <form method="post">
+            <label for="username">username</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="username"
+                required>
+            </input>
+            <label for="password">password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="password"
+                required>
+            </input>
+            <label for="remember">remember</label>
+            <div>
+                <input type="checkbox" id="remember" name="remember"> Запомнить меня</input>
+            </div>
+            <button type="submit">Log in</button>
+            <p><a href="{{ url_for('reg') }} ">Зарегестрироваться</a></p>
+        </form>
+        {% if error %}
+        <div class="invalid-feedback d-block">
+            {{ error }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mt-5 text-center">Счётчик посещений</h1>
+<div>
+    <ul class="my-3">
+        <li>{{ session['visits'] }}</li>
+    </ul>
+</div>
+{% endblock %}
